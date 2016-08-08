@@ -1,0 +1,35 @@
+version: "2"
+
+networks:
+  prorenata:
+
+services:
+  #RabbitMQ. Need to store erlang.coockie secret on all node communicated  
+  rabbit:
+    image: "rabbitmq:3-management"
+    networks: 
+      prorenata: {}
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    labels:
+      NAME: "rabbitmq1"
+  # Here is some defult celery app to start and linked with rabbitmq.
+  celery:
+    image: "celery"
+    links:
+      - "rabbit"
+  # App. Here is real py application. The application has a webui on nginx.  
+  # Aliases: the alternative of LB
+  # By sending a request to the alias instead to a particular container name, 
+  # Docker will perform round-robin load balancing and redirect it to one of the instances.
+  myapp:
+    build: "./pyapp"
+    networks:
+      prorenata:
+        aliases:
+          - "myalias"
+    ports:
+      - "8080:80"
+    links: 
+      - "rabbit" 
