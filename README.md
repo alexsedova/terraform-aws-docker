@@ -1,3 +1,7 @@
+---
+maintainer: alexsedova
+---
+
 # Terraform + AWS + Docker Swarm setup
 
 Here is the basic setup to run up docker swarm cluster in AWS using the Terraform.
